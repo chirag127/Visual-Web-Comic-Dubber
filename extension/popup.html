@@ -11,20 +11,20 @@
       padding: 15px;
       margin: 0;
     }
-    
+
     h1 {
       font-size: 18px;
       margin-top: 0;
       color: #333;
       text-align: center;
     }
-    
+
     .controls {
       display: flex;
       justify-content: center;
       margin-bottom: 15px;
     }
-    
+
     button {
       background-color: #4285f4;
       color: white;
@@ -35,42 +35,42 @@
       cursor: pointer;
       font-weight: bold;
     }
-    
+
     button:hover {
       background-color: #3367d6;
     }
-    
+
     button:disabled {
       background-color: #cccccc;
       cursor: not-allowed;
     }
-    
+
     .settings {
       margin-top: 20px;
     }
-    
+
     .setting-group {
       margin-bottom: 10px;
     }
-    
+
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
       font-size: 14px;
     }
-    
+
     select, input[type="range"] {
       width: 100%;
     }
-    
+
     .value-display {
       display: flex;
       justify-content: space-between;
       font-size: 12px;
       color: #666;
     }
-    
+
     .status {
       margin-top: 15px;
       padding: 10px;
@@ -79,29 +79,29 @@
       font-size: 14px;
       min-height: 40px;
     }
-    
+
     .status.error {
       background-color: #ffebee;
       color: #c62828;
     }
-    
+
     .status.success {
       background-color: #e8f5e9;
       color: #2e7d32;
     }
-    
+
     footer {
       margin-top: 15px;
       font-size: 12px;
       color: #666;
       text-align: center;
     }
-    
+
     .backend-url {
       margin-top: 10px;
       font-size: 12px;
     }
-    
+
     input[type="text"] {
       width: 100%;
       padding: 5px;
@@ -112,28 +112,28 @@
 </head>
 <body>
   <h1>Visual Web Comic Dubber</h1>
-  
+
   <div class="controls">
     <button id="startReading">Start Reading</button>
     <button id="stopReading">Stop</button>
   </div>
-  
+
   <div class="settings">
     <div class="setting-group">
       <label for="voice">Voice:</label>
       <select id="voice"></select>
     </div>
-    
+
     <div class="setting-group">
       <label for="rate">Speed:</label>
-      <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+      <input type="range" id="rate" min="0.5" max="32" step="0.1" value="1">
       <div class="value-display">
         <span>Slow</span>
         <span id="rateValue">1.0</span>
         <span>Fast</span>
       </div>
     </div>
-    
+
     <div class="setting-group">
       <label for="pitch">Pitch:</label>
       <input type="range" id="pitch" min="0.5" max="2" step="0.1" value="1">
@@ -143,7 +143,7 @@
         <span>High</span>
       </div>
     </div>
-    
+
     <div class="setting-group">
       <label for="volume">Volume:</label>
       <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
@@ -153,21 +153,21 @@
         <span>Loud</span>
       </div>
     </div>
-    
+
     <div class="setting-group backend-url">
       <label for="backendUrl">Backend URL:</label>
       <input type="text" id="backendUrl" value="http://localhost:3000">
     </div>
   </div>
-  
+
   <div class="status" id="status">
     Ready to read comics. Click "Start Reading" to begin.
   </div>
-  
+
   <footer>
     Visual Web Comic Dubber v1.0.0
   </footer>
-  
+
   <script src="popup.js"></script>
 </body>
 </html>
