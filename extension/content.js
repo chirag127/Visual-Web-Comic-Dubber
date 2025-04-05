@@ -21,7 +21,15 @@ const synth = window.speechSynthesis;
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
     if (message.action === "startReading") {
         // Update settings
-        currentSettings = message.settings;
+        currentSettings = {
+            voiceIndex: parseInt(message.settings.voiceIndex, 10),
+            rate: parseFloat(message.settings.rate),
+            pitch: parseFloat(message.settings.pitch),
+            volume: parseFloat(message.settings.volume),
+            backendUrl: message.settings.backendUrl,
+        };
+
+        console.log("Received settings:", currentSettings);
 
         // Start reading if not already reading
         if (!isReading) {
@@ -413,9 +421,17 @@ function speak(text) {
     }
 
     // Set other properties
-    utterance.rate = currentSettings.rate;
-    utterance.pitch = currentSettings.pitch;
-    utterance.volume = currentSettings.volume;
+    utterance.rate = parseFloat(currentSettings.rate);
+    utterance.pitch = parseFloat(currentSettings.pitch);
+    utterance.volume = parseFloat(currentSettings.volume);
+
+    // Log speech settings for debugging
+    console.log("Speech settings:", {
+        voice: utterance.voice ? utterance.voice.name : "default",
+        rate: utterance.rate,
+        pitch: utterance.pitch,
+        volume: utterance.volume,
+    });
 
     // Handle end of speech
     utterance.onend = () => {

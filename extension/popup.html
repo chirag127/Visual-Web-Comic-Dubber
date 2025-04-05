@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,7 +61,8 @@
       font-size: 14px;
     }
 
-    select, input[type="range"] {
+    select,
+    input[type="range"] {
       width: 100%;
     }
 
@@ -110,12 +112,17 @@
     }
   </style>
 </head>
+
 <body>
   <h1>Visual Web Comic Dubber</h1>
 
   <div class="controls">
     <button id="startReading">Start Reading</button>
     <button id="stopReading">Stop</button>
+  </div>
+
+  <div class="controls" style="margin-top: -10px;">
+    <button id="debugButton" style="background-color: #757575; font-size: 12px;">Debug Console</button>
   </div>
 
   <div class="settings">
@@ -170,4 +177,5 @@
 
   <script src="popup.js"></script>
 </body>
+
 </html>

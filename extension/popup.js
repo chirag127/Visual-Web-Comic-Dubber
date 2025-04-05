@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // UI Elements
     const startButton = document.getElementById("startReading");
     const stopButton = document.getElementById("stopReading");
+    const debugButton = document.getElementById("debugButton");
     const voiceSelect = document.getElementById("voice");
     const rateInput = document.getElementById("rate");
     const pitchInput = document.getElementById("pitch");
@@ -184,6 +185,26 @@ document.addEventListener("DOMContentLoaded", function () {
         if (speechSynthesis.speaking) {
             speechSynthesis.cancel();
         }
+    });
+
+    // Debug button to open console
+    debugButton.addEventListener("click", function () {
+        chrome.tabs.query(
+            { active: true, currentWindow: true },
+            function (tabs) {
+                chrome.tabs.executeScript(tabs[0].id, {
+                    code: 'console.log("Debug mode activated"); console.log("Current settings:", currentSettings);',
+                });
+
+                // Open DevTools
+                chrome.tabs.executeScript(tabs[0].id, {
+                    code: "setTimeout(() => { debugger; }, 500);",
+                });
+
+                statusElement.textContent =
+                    "Debug mode activated. Press F12 to see console.";
+            }
+        );
     });
 
     // Load settings when popup opens
