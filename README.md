@@ -14,35 +14,31 @@ A Chrome extension that detects and reads text from web comics aloud using OCR (
 -   Extracts text using Google Gemini 2.0 Flash API
 -   Reads text aloud using Web Speech API
 -   Customizable voice, speed, and pitch
--   Floating toolbar with playback controls
--   Right-click or area selection for comic capture
+-   Highlights current comic image being processed
+-   Simple popup interface with playback controls
 
 ## 📌 Project Structure
 
 ```
-project-root/
+visual-web-comic-dubber/
 │
-├── extension/         # Chrome Extension Frontend
-│   ├── manifest.json
-│   ├── content.js     # Injected script for capturing comic images
-│   ├── background.js  # Background service worker
-│   ├── ui/
-│   │   ├── toolbar.html  # Popup UI
-│   │   ├── toolbar.js
-│   │   └── toolbar.css
-│   ├── settings/     # Settings UI
-│   │   ├── settings.html
-│   │   └── settings.js
-│   └── assets/
-│       ├── icon16.png
-│       ├── icon48.png
-│       └── icon128.png
+├── extension/              # Chrome extension code
+│   ├── manifest.json       # Extension configuration
+│   ├── popup.html         # Extension popup UI
+│   ├── popup.js           # Popup logic
+│   ├── content.js         # Content script for detecting images and TTS
+│   ├── background.js      # Background service worker
+│   └── settings.js        # Settings management
 │
-└── backend/           # Node.js Backend for OCR
-    ├── server.js
-    ├── routes/ocr.js
-    ├── services/geminiOCR.js
-    └── .env
+├── backend/                # Node.js OCR API using Gemini
+│   ├── server.js          # Main server file
+│   ├── ocr.js             # OCR implementation using Gemini 2.0 Flash API
+│   ├── package.json       # Backend dependencies
+│   └── .env.example       # Template for environment variables
+│
+├── icon16.png             # Extension icons
+├── icon48.png
+└── icon128.png
 ```
 
 ## 💾 Installation Instructions
@@ -94,9 +90,7 @@ project-root/
 
 4. Click the settings icon to customize voice, speed, and pitch
 
-5. Click "Capture Comic" to select an area of the page to process
-
-6. Right-click on comic images and select "Capture Comic" from the context menu
+5. The extension will automatically detect and process comic images on the page
 
 ## 🔨 Tech Stack / Tools Used
 

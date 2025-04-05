@@ -1,137 +1,155 @@
-Perfect! That simplifies things. Let's update the **Product Requirements Document (PRD)** accordingly — now the extension **detects all text directly from comic images** without needing to identify speech bubbles specifically.
+# 📘 Product Requirements Document (PRD)
 
----
-
-## 📝 Updated Product Requirements Document (PRD)
-
----
-
-### 📌 Product Name
+## Product Name
 **Visual Web Comic Dubber**
 
 ---
 
-### 🧠 Overview
-A Chrome extension that detects and reads text from web comics aloud. It uses **Google Gemini 2.0 Flash API** for OCR (detecting text directly from the comic image) and the **Web Speech API** for Text-to-Speech (TTS). Users can customize the reading voice, pitch, and speed.
+## Overview
+A browser extension that allows users to hear web comics aloud. It detects **text** from comic images (not just speech bubbles), sends them one by one to a backend API powered by **Google Gemini 2.0 Flash API** for OCR, and uses the **Web Speech API** to read the text with customizable TTS settings.
 
 ---
 
-### 🎯 Goals
-- Detect all visible text in comic images using OCR.
-- Read extracted text using TTS via Web Speech API.
-- Allow full control over:
-  - Voice selection
-  - Speed
-  - Pitch
-  - Playback (Play, Pause, Stop)
+## Goals
+- Extract text from comic images using OCR.
+- Read the extracted text using browser-native TTS.
+- Allow users to configure voice, pitch, and reading speed.
+- Handle each image **one by one** for accurate OCR.
+- Organize codebase with a clean separation between `extension/` and `backend/`.
 
 ---
 
-### 🗂️ Project Structure
+## Features
+
+### Extension (Frontend)
+- 🖼️ Detect and collect comic images from the current webpage.
+- 📤 Send each image to the backend individually via HTTP POST.
+- 📥 Receive extracted text from the backend and queue it.
+- 🔊 Use Web Speech API to:
+  - Read each line aloud.
+  - Highlight current sentence (optional future enhancement).
+- ⚙️ User configuration panel:
+  - Voice selection (from `speechSynthesis.getVoices()`).
+  - Speed (rate), pitch, and volume.
+
+### Backend (Node.js)
+- 🎯 Accept image uploads.
+- 📦 Process each image using Google Gemini 2.0 Flash API.
+- 📝 Return extracted text as plain JSON response.
+- 🛡️ Handle rate limits and error fallback gracefully.
+
+---
+
+## Folder Structure
+
 ```
-project-root/
+/visual-web-comic-dubber
 │
-├── extension/         # Chrome Extension Frontend
-│   ├── manifest.json
-│   ├── content.js            # Injected script for capturing comic images
-│   ├── background.js
-│   ├── ui/
-│   │   └── toolbar.html / toolbar.js / toolbar.css
-│   ├── settings/             # Settings UI
-│   │   └── settings.html / settings.js
-│   └── assets/
-│       └── icons, styles
+├── extension/              # Chrome extension code
+│   ├── content.js
+│   ├── popup.html
+│   ├── popup.js
+│   ├── settings.js
+│   └── manifest.json
 │
-└── backend/           # Node.js Backend for OCR
-    ├── server.js
-    ├── routes/ocr.js
-    ├── services/geminiOCR.js
-    └── .env
+├── backend/                # Node.js OCR API using Gemini
+│   ├── server.js
+│   ├── ocr.js
+│   └── .env                # Contains GEMINI_API_KEY
+│
+└── README.md
 ```
 
 ---
 
-### ⚙️ Core Features
+## Backend OCR Example (`ocr.js`)
 
-#### 1. 📷 Image Capture (Frontend)
-- Select comic image via right-click, drag, or hover.
-- Extract the image or its base64 representation.
-- Send to backend for OCR.
+```js
+const {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} = require("@google/generative-ai");
+const { GoogleAIFileManager } = require("@google/generative-ai/server");
+const fs = require("node:fs");
+const mime = require("mime-types");
+const express = require("express");
+const multer = require("multer");
+const path = require("path");
+require("dotenv").config();
 
-#### 2. 📄 OCR Text Extraction (Backend)
-- POST image to `/api/ocr`
-- Use **Google Gemini 2.0 Flash API** to extract **all visible text** from the image.
-- Return cleaned and ordered text for narration.
+const app = express();
+const upload = multer({ dest: "uploads/" });
 
-#### 3. 🔊 TTS Playback (Frontend)
-- Use **Web Speech API**
-- Convert returned text to speech
-- Playback controls:
-  - **Play / Pause / Stop**
-  - **Speed & Pitch sliders**
-  - **Voice selection**
+const apiKey = process.env.GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey);
+const fileManager = new GoogleAIFileManager(apiKey);
 
-#### 4. ⚙️ Settings UI
-- Choose from available voices
-- Adjust reading speed and pitch
-- Toggle auto-play on OCR return
-- All settings saved to Chrome `storage.sync`
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
----
+async function uploadToGemini(filePath, mimeType) {
+  const uploadResult = await fileManager.uploadFile(filePath, {
+    mimeType,
+    displayName: path.basename(filePath),
+  });
+  return uploadResult.file;
+}
 
-### 📶 APIs Used
+app.post("/ocr", upload.single("image"), async (req, res) => {
+  try {
+    const mimeType = mime.lookup(req.file.path);
+    const geminiFile = await uploadToGemini(req.file.path, mimeType);
 
-#### Backend
-- **Google Gemini 2.0 Flash API**
-  - Input: Base64 comic image
-  - Output: Ordered extracted text
-  - Integrated via `geminiOCR.js` service
+    const session = model.startChat({
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.95,
+        maxOutputTokens: 4096,
+      },
+      history: [
+        {
+          role: "user",
+          parts: [
+            {
+              fileData: {
+                mimeType: geminiFile.mimeType,
+                fileUri: geminiFile.uri,
+              },
+            },
+            {
+              text: "Extract and return the readable comic dialogue text only.",
+            },
+          ],
+        },
+      ],
+    });
 
-#### Frontend
-- **Web Speech API**
-  - For speech synthesis from OCR text
+    const result = await session.sendMessage("Extract text from this comic image.");
+    res.json({ text: result.response.text() });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to extract text." });
+  }
+});
 
----
-
-### 🔐 Chrome Extension Permissions
-```json
-"permissions": [
-  "activeTab",
-  "scripting",
-  "storage",
-  "contextMenus"
-],
-"host_permissions": [
-  "<all_urls>"
-]
+app.listen(3000, () => {
+  console.log("OCR server running on http://localhost:3000");
+});
 ```
 
 ---
 
-### 📱 UI Overview
+## Extension ➝ Backend Example Flow
 
-#### 🧭 Floating Toolbar
-- Play / Pause / Stop
-- "Capture Comic" button
-- Settings gear icon
-
-#### 🎚️ Settings Panel
-- Voice selector (dropdown)
-- Speed and Pitch sliders
-- Auto-play toggle
+1. **Content script** grabs all comic images (`img` tags or canvas).
+2. Sends each image as FormData to `http://localhost:3000/ocr`.
+3. Gets a response like `{ text: "Hey! What are you doing here?" }`.
+4. Passes the text to `speechSynthesis.speak()` with user-defined settings.
 
 ---
 
-### ✅ MVP Checklist
-- [ ] Capture comic image from webpage
-- [ ] Send image to backend for OCR
-- [ ] Get and read extracted text via Web Speech API
-- [ ] Allow voice customization and settings storage
-- [ ] Simple UI for playback and settings
-
----
-
-### 🚀 Future Add-ons
-- Character-specific voice assignment
-- Highlight words during TTS
-- Comic page auto-scroll sync with voice
+## Future Enhancements
+- Character voice assignment (detect speakers and map to voices).
+- Highlighting text bubble with mouseover playback.
+- Support for multi-language detection & reading.
+- Save extracted dialogues as transcripts.
