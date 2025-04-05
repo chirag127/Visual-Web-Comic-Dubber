@@ -10,7 +10,6 @@
     "scripting"
   ],
   "host_permissions": [
-    "http://localhost:3000/*",
     "http://localhost:3001/*",
     "https://visual-web-comic-dubber.onrender.com/*"
   ],

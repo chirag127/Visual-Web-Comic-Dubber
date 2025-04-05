@@ -130,3 +130,4 @@ dist
 .pnp.*
 backend/package-lock.json
 backend/uploads/
+extension.zip
