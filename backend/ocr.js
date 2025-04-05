@@ -84,10 +84,19 @@ app.post("/ocr", upload.single("image"), async (req, res) => {
         const imagePart = await fileToGenerativePart(req.file.path, mimeType);
 
         // Generate content with the image
-        const result = await model.generateContent([
-            imagePart,
-            "Extract and return the readable comic dialogue text only. Format it as a single paragraph with proper punctuation.",
-        ]);
+        const result = await model.generateContent(
+            [
+                imagePart,
+                "You are an OCR system for comic images. Extract ALL text visible in this comic image, including dialogue in speech bubbles, captions, sound effects, and any other text. Return ONLY the extracted text, formatted as a single paragraph with proper punctuation. If no text is found, respond with 'No text detected in this image.'",
+            ],
+            {
+                generationConfig: {
+                    temperature: 0.1,
+                    topP: 0.95,
+                    maxOutputTokens: 4096,
+                },
+            }
+        );
 
         const extractedText = result.response.text();
 
