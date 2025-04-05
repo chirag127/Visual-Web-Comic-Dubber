@@ -1,5 +1,8 @@
+Perfect! That simplifies things. Let's update the **Product Requirements Document (PRD)** accordingly — now the extension **detects all text directly from comic images** without needing to identify speech bubbles specifically.
 
-## 📝 Product Requirements Document (PRD)
+---
+
+## 📝 Updated Product Requirements Document (PRD)
 
 ---
 
@@ -9,19 +12,18 @@
 ---
 
 ### 🧠 Overview
-A Chrome extension that detects speech bubbles in web comics using OCR (Google Gemini 2.0 Flash API), reads them aloud using the Web Speech API (Text-to-Speech), and allows users to customize voice, speed, and pitch. Users can enjoy web comics in an audio-visual format, with automatic character voice assignments and seamless playback.
+A Chrome extension that detects and reads text from web comics aloud. It uses **Google Gemini 2.0 Flash API** for OCR (detecting text directly from the comic image) and the **Web Speech API** for Text-to-Speech (TTS). Users can customize the reading voice, pitch, and speed.
 
 ---
 
 ### 🎯 Goals
-- Detect speech bubbles in web comics.
-- Extract text via OCR using **Google Gemini 2.0 Flash API**.
-- Read out the extracted text using the **Web Speech API (TTS)**.
-- Allow character-specific voice configuration.
-- Provide UI controls for:
-  - Play, Pause, Stop
+- Detect all visible text in comic images using OCR.
+- Read extracted text using TTS via Web Speech API.
+- Allow full control over:
   - Voice selection
-  - Speed and Pitch adjustment
+  - Speed
+  - Pitch
+  - Playback (Play, Pause, Stop)
 
 ---
 
@@ -31,10 +33,11 @@ project-root/
 │
 ├── extension/         # Chrome Extension Frontend
 │   ├── manifest.json
-│   ├── content.js
+│   ├── content.js            # Injected script for capturing comic images
 │   ├── background.js
-│   ├── popup.html / popup.js (optional)
 │   ├── ui/
+│   │   └── toolbar.html / toolbar.js / toolbar.css
+│   ├── settings/             # Settings UI
 │   │   └── settings.html / settings.js
 │   └── assets/
 │       └── icons, styles
@@ -50,32 +53,29 @@ project-root/
 
 ### ⚙️ Core Features
 
-#### 1. 🖼️ Speech Bubble Detection
-- **Client-side:** Detect comic panels and speech bubbles using DOM analysis and image processing.
-- **Backend:** Send image regions or whole screenshots to the backend for OCR.
+#### 1. 📷 Image Capture (Frontend)
+- Select comic image via right-click, drag, or hover.
+- Extract the image or its base64 representation.
+- Send to backend for OCR.
 
 #### 2. 📄 OCR Text Extraction (Backend)
-- Uses **Google Gemini 2.0 Flash API** to extract text from comic panels.
-- Processes and returns structured dialogue content.
+- POST image to `/api/ocr`
+- Use **Google Gemini 2.0 Flash API** to extract **all visible text** from the image.
+- Return cleaned and ordered text for narration.
 
 #### 3. 🔊 TTS Playback (Frontend)
-- Uses **Web Speech API** (`SpeechSynthesisUtterance`)
-- Customizable voice for each character (based on bubble position or user tag).
-- Adjustable playback:
-  - **Speed**
-  - **Pitch**
-  - **Voice**
+- Use **Web Speech API**
+- Convert returned text to speech
+- Playback controls:
+  - **Play / Pause / Stop**
+  - **Speed & Pitch sliders**
+  - **Voice selection**
 
-#### 4. 🧑‍🎨 Character Voice Assignment
-- Based on bubble position (left/right/top) or user rules.
-- UI to assign different voices to characters (saved in localStorage or synced storage).
-
-#### 5. 🧩 Inline Controls
-- Floating UI overlay with:
-  - Play/Pause/Stop
-  - Voice selector
-  - Speed/pitch sliders
-  - Toggle auto-play
+#### 4. ⚙️ Settings UI
+- Choose from available voices
+- Adjust reading speed and pitch
+- Toggle auto-play on OCR return
+- All settings saved to Chrome `storage.sync`
 
 ---
 
@@ -83,22 +83,23 @@ project-root/
 
 #### Backend
 - **Google Gemini 2.0 Flash API**
-  - Endpoint: `/api/ocr`
-  - Input: Screenshot or cropped image region (base64)
-  - Output: Detected text in order
+  - Input: Base64 comic image
+  - Output: Ordered extracted text
+  - Integrated via `geminiOCR.js` service
 
 #### Frontend
-- **Web Speech API** (`SpeechSynthesis`)
-  - For reading out the extracted dialogues
+- **Web Speech API**
+  - For speech synthesis from OCR text
 
 ---
 
-### 🔐 Permissions (Chrome Extension)
+### 🔐 Chrome Extension Permissions
 ```json
 "permissions": [
   "activeTab",
   "scripting",
-  "storage"
+  "storage",
+  "contextMenus"
 ],
 "host_permissions": [
   "<all_urls>"
@@ -107,30 +108,30 @@ project-root/
 
 ---
 
-### 📱 UI Mockups (High-Level)
-1. **Floating Toolbar**
-   - Play / Pause / Stop
-   - Gear icon for settings
-2. **Settings Panel**
-   - Voice dropdown per character
-   - Speed/Pitch sliders
-   - Enable/Disable auto-play
+### 📱 UI Overview
+
+#### 🧭 Floating Toolbar
+- Play / Pause / Stop
+- "Capture Comic" button
+- Settings gear icon
+
+#### 🎚️ Settings Panel
+- Voice selector (dropdown)
+- Speed and Pitch sliders
+- Auto-play toggle
 
 ---
 
-### 🧪 MVP Checklist
-- [ ] Speech bubble detection via DOM or image cropping
-- [ ] OCR integration with backend (Gemini 2.0 Flash)
-- [ ] Basic TTS playback of detected dialogue
-- [ ] Voice customization per character
-- [ ] UI for playback + settings
+### ✅ MVP Checklist
+- [ ] Capture comic image from webpage
+- [ ] Send image to backend for OCR
+- [ ] Get and read extracted text via Web Speech API
+- [ ] Allow voice customization and settings storage
+- [ ] Simple UI for playback and settings
 
 ---
 
-### 🚀 other Enhancements
-- Emotion-based voice tone
-- Speech synchronization with highlighted bubbles
-- Comic navigation and playback history
-- Cloud sync of voice settings using chrome.storage.sync API
-
----
+### 🚀 Future Add-ons
+- Character-specific voice assignment
+- Highlight words during TTS
+- Comic page auto-scroll sync with voice

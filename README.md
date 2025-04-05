@@ -2,7 +2,7 @@
 
 ## ✨ Description
 
-A Chrome extension that detects speech bubbles in web comics using OCR (Google Gemini 2.0 Flash API), reads them aloud using the Web Speech API (Text-to-Speech), and allows users to customize voice, speed, and pitch. Users can enjoy web comics in an audio-visual format, with automatic character voice assignments and seamless playback.
+A Chrome extension that detects and reads text from web comics aloud using OCR (Google Gemini 2.0 Flash API) and the Web Speech API (Text-to-Speech). Users can customize the reading voice, pitch, and speed for an enhanced comic reading experience.
 
 ## 🚀 Live Demo
 
@@ -10,12 +10,12 @@ A Chrome extension that detects speech bubbles in web comics using OCR (Google G
 
 ## 🧰 Features
 
--   Detects speech bubbles in web comics
--   Extracts text using OCR (Google Gemini 2.0 Flash API)
+-   Detects all visible text in comic images using OCR
+-   Extracts text using Google Gemini 2.0 Flash API
 -   Reads text aloud using Web Speech API
 -   Customizable voice, speed, and pitch
--   Character-specific voice assignment
--   Floating UI controls
+-   Floating toolbar with playback controls
+-   Right-click or area selection for comic capture
 
 ## 📌 Project Structure
 
@@ -24,15 +24,19 @@ project-root/
 │
 ├── extension/         # Chrome Extension Frontend
 │   ├── manifest.json
-│   ├── content.js
-│   ├── background.js
-│   ├── popup.html
-│   ├── popup.js
+│   ├── content.js     # Injected script for capturing comic images
+│   ├── background.js  # Background service worker
 │   ├── ui/
+│   │   ├── toolbar.html  # Popup UI
+│   │   ├── toolbar.js
+│   │   └── toolbar.css
+│   ├── settings/     # Settings UI
 │   │   ├── settings.html
 │   │   └── settings.js
 │   └── assets/
-│       └── styles.css
+│       ├── icon16.png
+│       ├── icon48.png
+│       └── icon128.png
 │
 └── backend/           # Node.js Backend for OCR
     ├── server.js
@@ -90,7 +94,9 @@ project-root/
 
 4. Click the settings icon to customize voice, speed, and pitch
 
-5. For advanced settings, click "Advanced Settings" in the popup
+5. Click "Capture Comic" to select an area of the page to process
+
+6. Right-click on comic images and select "Capture Comic" from the context menu
 
 ## 🔨 Tech Stack / Tools Used
 
