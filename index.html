@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Web Comic Dubber</title>
+    <link rel="icon" type="image/png" href="extension/assets/icon48.png">
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --primary-hover: #3367d6;
+            --secondary-color: #ea4335;
+            --text-color: #e0e0e0;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --card-hover: #2a2a2a;
+            --header-bg: #0a0a0a;
+            --footer-bg: #0a0a0a;
+            --border-color: #333;
+            --success-color: #34a853;
+            --warning-color: #fbbc05;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--primary-hover);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--header-bg);
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin-right: 1rem;
+        }
+
+        .extension-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-color);
+            margin: 0.5rem auto;
+        }
+
+        /* About Section */
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            background-color: var(--card-hover);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Installation Section */
+        .installation-steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 0.5rem;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        /* How to Use Section */
+        .usage-steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Tech Stack Section */
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .tech-item {
+            background-color: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: var(--card-hover);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--footer-bg);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        .copyright {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-buttons {
+                flex-direction: column;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="extension/assets/icon48.png" alt="Visual Web Comic Dubber Logo" class="logo">
+                    <h1 class="extension-name">Visual Web Comic Dubber</h1>
+                </div>
+                <p class="tagline">Transform web comics into an audio-visual experience with AI-powered speech bubble detection and text-to-speech.</p>
+                <div class="header-buttons">
+                    <a href="https://github.com/chirag127/Visual-Web-Comic-Dubber" target="_blank" class="btn btn-primary">GitHub Repository</a>
+                    <a href="privacy-policy.html" target="_blank" class="btn btn-secondary">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="animate">
+        <div class="container">
+            <h2 class="section-title">About</h2>
+            <div class="about-content">
+                <p>Visual Web Comic Dubber is a Chrome extension that enhances your web comic reading experience by automatically detecting speech bubbles, extracting text using Google Gemini 2.0 Flash API for OCR, and reading it aloud using the Web Speech API.</p>
+                <p>With customizable voices, speeds, and character-specific settings, you can enjoy web comics in a whole new way, making them more accessible and engaging.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="animate delay-1">
+        <div class="container">
+            <h2 class="section-title">Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">Speech Bubble Detection</h3>
+                    <p>Automatically detects speech bubbles in web comics using DOM analysis and image processing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="feature-title">OCR Text Extraction</h3>
+                    <p>Extracts text from speech bubbles using Google Gemini 2.0 Flash API for accurate recognition.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔊</div>
+                    <h3 class="feature-title">Text-to-Speech Playback</h3>
+                    <p>Reads extracted text aloud using the Web Speech API with customizable voices and settings.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-title">Character Voice Assignment</h3>
+                    <p>Assign different voices to characters based on bubble position or user-defined rules.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎛️</div>
+                    <h3 class="feature-title">Customizable Settings</h3>
+                    <p>Adjust voice, speed, pitch, and other settings to personalize your experience.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Floating UI Controls</h3>
+                    <p>Convenient, non-intrusive controls for playback and settings that can be positioned anywhere on the page.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="animate delay-2">
+        <div class="container">
+            <h2 class="section-title">Installation Instructions</h2>
+            <div class="installation-steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <span class="step-title">Clone or download the repository</span>
+                    <p>Get the code from <a href="https://github.com/chirag127/Visual-Web-Comic-Dubber" target="_blank">GitHub</a> by cloning the repository or downloading as a ZIP file.</p>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span class="step-title">Set up the backend server</span>
+                    <p>Navigate to the backend directory, install dependencies with <code>npm install</code>, create a <code>.env</code> file with your Gemini API key, and start the server with <code>npm start</code>.</p>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span class="step-title">Load the extension in Chrome</span>
+                    <p>Open Chrome and go to <code>chrome://extensions/</code>, enable "Developer mode", click "Load unpacked", and select the <code>extension</code> directory.</p>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <span class="step-title">Configure settings (optional)</span>
+                    <p>Click on the extension icon and go to "Advanced Settings" to customize voices, speeds, and character assignments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use Section -->
+    <section id="usage" class="animate delay-3">
+        <div class="container">
+            <h2 class="section-title">How to Use</h2>
+            <div class="usage-steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <span class="step-title">Navigate to a web comic page</span>
+                    <p>Open your favorite web comic in Chrome.</p>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span class="step-title">Click the extension icon</span>
+                    <p>Click on the Visual Web Comic Dubber icon in your browser toolbar to open the popup.</p>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span class="step-title">Use the controls</span>
+                    <p>Use the play, pause, and stop buttons to control the text-to-speech playback.</p>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <span class="step-title">Adjust settings</span>
+                    <p>Click the settings icon to customize voice, speed, and pitch, or access advanced settings for more options.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech-stack" class="animate delay-3">
+        <div class="container">
+            <h2 class="section-title">Technology Stack</h2>
+            <div class="tech-list">
+                <div class="tech-item">JavaScript</div>
+                <div class="tech-item">HTML/CSS</div>
+                <div class="tech-item">Chrome Extension API</div>
+                <div class="tech-item">Web Speech API</div>
+                <div class="tech-item">Google Gemini 2.0 Flash API</div>
+                <div class="tech-item">Node.js</div>
+                <div class="tech-item">Express.js</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/chirag127/Visual-Web-Comic-Dubber" target="_blank">GitHub Repository</a>
+                <a href="privacy-policy.html" target="_blank">Privacy Policy</a>
+                <a href="https://github.com/chirag127/Visual-Web-Comic-Dubber/issues" target="_blank">Report Issues</a>
+            </div>
+            <p class="copyright">© 2025 Chirag Singhal. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

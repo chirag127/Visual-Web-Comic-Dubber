@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Visual Web Comic Dubber</title>
+    <link rel="icon" type="image/png" href="extension/assets/icon48.png">
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --primary-hover: #3367d6;
+            --secondary-color: #ea4335;
+            --text-color: #e0e0e0;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --card-hover: #2a2a2a;
+            --header-bg: #0a0a0a;
+            --footer-bg: #0a0a0a;
+            --border-color: #333;
+            --success-color: #34a853;
+            --warning-color: #fbbc05;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--primary-hover);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--header-bg);
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .policy-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .last-updated {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        /* Section Styles */
+        .policy-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .policy-section p {
+            margin-bottom: 1rem;
+        }
+
+        .policy-section ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .policy-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight {
+            background-color: rgba(66, 133, 244, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--footer-bg);
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        .copyright {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .back-button {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 1rem;
+                align-self: flex-start;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="back-button">← Back to Home</a>
+                <h1 class="policy-title">Privacy Policy</h1>
+                <p class="last-updated">Last Updated: May 4, 2025</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Introduction -->
+        <section class="policy-section">
+            <h2 class="section-title">Introduction</h2>
+            <p>This Privacy Policy explains how Visual Web Comic Dubber ("we", "our", or "the extension") collects, uses, and protects your information when you use our Chrome extension. We are committed to ensuring that your privacy is protected and that you understand how your data is used.</p>
+            <p>By using Visual Web Comic Dubber, you agree to the collection and use of information in accordance with this policy. We will not use or share your information with anyone except as described in this Privacy Policy.</p>
+        </section>
+
+        <!-- Required Permissions -->
+        <section class="policy-section">
+            <h2 class="section-title">Required Permissions</h2>
+            <p>Visual Web Comic Dubber requires the following permissions to function properly:</p>
+            <ul>
+                <li><span class="highlight">activeTab</span> - This permission is required to interact with the content of the active tab, allowing the extension to detect speech bubbles and inject UI elements for playback controls.</li>
+                <li><span class="highlight">scripting</span> - This permission allows the extension to execute scripts in the context of web pages, which is necessary for detecting speech bubbles and capturing screenshots for OCR processing.</li>
+                <li><span class="highlight">storage</span> - This permission is used to save your preferences (voice settings, speed, pitch, character voice assignments) locally on your device.</li>
+                <li><span class="highlight">host permissions</span> (<code>&lt;all_urls&gt;</code>) - This permission allows the extension to function on any website that contains web comics. It's necessary for the extension to detect and process speech bubbles across different comic websites.</li>
+            </ul>
+        </section>
+
+        <!-- Information We Collect -->
+        <section class="policy-section">
+            <h2 class="section-title">Information We Collect</h2>
+            <p>Visual Web Comic Dubber collects the following information:</p>
+            <ul>
+                <li><strong>User Preferences</strong> - We collect and store your preferences for voice, speed, pitch, and character voice assignments. This data is stored locally on your device using Chrome's storage API.</li>
+                <li><strong>Page Content</strong> - The extension temporarily processes the content of web pages to detect speech bubbles. This includes capturing screenshots of detected speech bubbles for OCR processing.</li>
+            </ul>
+            <p><strong>What We DO NOT Collect:</strong></p>
+            <ul>
+                <li>Personal identification information</li>
+                <li>Browsing history</li>
+                <li>Login credentials</li>
+                <li>Any data not directly related to the extension's functionality</li>
+            </ul>
+        </section>
+
+        <!-- How We Use Your Information -->
+        <section class="policy-section">
+            <h2 class="section-title">How We Use Your Information</h2>
+            <p>The information we collect is used solely for the purpose of providing and improving the functionality of the Visual Web Comic Dubber extension:</p>
+            <ul>
+                <li>User preferences are used to customize the text-to-speech experience according to your settings.</li>
+                <li>Page content and screenshots are temporarily processed to detect speech bubbles and extract text for text-to-speech playback.</li>
+            </ul>
+            <p>We do not sell, trade, or otherwise transfer your information to third parties for marketing or advertising purposes.</p>
+        </section>
+
+        <!-- Data Storage & Security -->
+        <section class="policy-section">
+            <h2 class="section-title">Data Storage & Security</h2>
+            <p>Your preferences are stored locally on your device using Chrome's storage API. This data remains on your device and is not transmitted to our servers.</p>
+            <p>Screenshots of speech bubbles are temporarily sent to our backend server for OCR processing using secure HTTPS connections. These images are not stored permanently and are deleted immediately after processing.</p>
+            <p>We implement appropriate security measures to protect against unauthorized access, alteration, disclosure, or destruction of your information.</p>
+        </section>
+
+        <!-- Third-Party Services -->
+        <section class="policy-section">
+            <h2 class="section-title">Third-Party Services</h2>
+            <p>Visual Web Comic Dubber uses the following third-party services:</p>
+            <ul>
+                <li><strong>Google Gemini 2.0 Flash API</strong> - Used for OCR text extraction from speech bubbles. When you use our extension, images of speech bubbles are sent to Google's Gemini API for text extraction. Please refer to <a href="https://ai.google.dev/privacy" target="_blank">Google's AI Privacy Policy</a> for more information on how they handle data.</li>
+                <li><strong>Web Speech API</strong> - Used for text-to-speech functionality. This is a browser API and does not transmit data to external servers.</li>
+            </ul>
+            <p>We do not share your personal information with these services beyond what is necessary for the extension to function.</p>
+        </section>
+
+        <!-- User Rights -->
+        <section class="policy-section">
+            <h2 class="section-title">User Rights</h2>
+            <p>You have the following rights regarding your data:</p>
+            <ul>
+                <li><strong>Access</strong> - You can access your stored preferences through the extension's settings.</li>
+                <li><strong>Modification</strong> - You can modify your preferences at any time through the extension's settings.</li>
+                <li><strong>Deletion</strong> - You can reset your preferences to defaults or uninstall the extension to remove all stored data.</li>
+            </ul>
+        </section>
+
+        <!-- Changes to This Privacy Policy -->
+        <section class="policy-section">
+            <h2 class="section-title">Changes to This Privacy Policy</h2>
+            <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date at the top.</p>
+            <p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
+        </section>
+
+        <!-- Contact Information -->
+        <section class="policy-section">
+            <h2 class="section-title">Contact Information</h2>
+            <p>If you have any questions or concerns about this Privacy Policy, please contact us:</p>
+            <ul>
+                <li>By creating an issue on our <a href="https://github.com/chirag127/Visual-Web-Comic-Dubber/issues" target="_blank">GitHub repository</a></li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="https://github.com/chirag127/Visual-Web-Comic-Dubber" target="_blank">GitHub Repository</a>
+                <a href="https://github.com/chirag127/Visual-Web-Comic-Dubber/issues" target="_blank">Report Issues</a>
+            </div>
+            <p class="copyright">© 2025 Chirag Singhal. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
