@@ -7,7 +7,7 @@ let currentSettings = {
     rate: 1.0,
     pitch: 1.0,
     volume: 1.0,
-    backendUrl: "http://localhost:3001",
+    backendUrl: "https://visual-web-comic-dubber.onrender.com",
 };
 let processedImages = new Set();
 let currentHighlightedImage = null;

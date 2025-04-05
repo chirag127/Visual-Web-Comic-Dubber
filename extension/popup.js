@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 rate: 1.0,
                 pitch: 1.0,
                 volume: 1.0,
-                backendUrl: "http://localhost:3001",
+                backendUrl: "https://visual-web-comic-dubber.onrender.com",
             },
             function (items) {
                 // Set values after voices are loaded
