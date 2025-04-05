@@ -1,6 +1,7 @@
 // Global variables
 let isReading = false;
 let textQueue = [];
+let imageQueue = [];
 let currentSettings = {
     voiceIndex: 0,
     rate: 1.0,
@@ -9,6 +10,9 @@ let currentSettings = {
     backendUrl: "http://localhost:3001",
 };
 let processedImages = new Set();
+let currentHighlightedImage = null;
+let isProcessingNextImage = false;
+let currentImageIndex = -1;
 
 // Initialize speech synthesis
 const synth = window.speechSynthesis;
@@ -48,6 +52,12 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
 
 // Function to detect and process comic images
 async function processComicImages() {
+    // Reset state
+    textQueue = [];
+    imageQueue = [];
+    currentImageIndex = -1;
+    isProcessingNextImage = false;
+
     // Find all images on the page
     const images = Array.from(document.querySelectorAll("img"));
 
@@ -81,61 +91,159 @@ async function processComicImages() {
         return;
     }
 
-    console.log(`Processing ${comicImages.length} comic images`);
+    console.log(`Found ${comicImages.length} comic images`);
 
     // Sort images by their vertical position (top to bottom)
-    comicImages.sort((a, b) => {
+    imageQueue = comicImages.sort((a, b) => {
         const rectA = a.getBoundingClientRect();
         const rectB = b.getBoundingClientRect();
         return rectA.top - rectB.top;
     });
 
-    // Process each image one by one
-    for (const img of comicImages) {
-        if (!isReading) break; // Stop if reading was cancelled
+    console.log(`Sorted ${imageQueue.length} comic images by position`);
 
-        try {
-            // Mark image as processed
-            processedImages.add(img.src);
+    // Start processing the first image
+    await processNextImage();
+}
 
-            // Highlight the current image
-            const originalStyle = {
-                outline: img.style.outline,
-                outlineOffset: img.style.outlineOffset,
-            };
-
-            img.style.outline = "3px solid #4285f4";
-            img.style.outlineOffset = "2px";
-
-            // Scroll to the image
-            img.scrollIntoView({ behavior: "smooth", block: "center" });
-
-            // Extract text from image
-            const text = await extractTextFromImage(img);
-
-            // Remove highlight after processing
-            img.style.outline = originalStyle.outline;
-            img.style.outlineOffset = originalStyle.outlineOffset;
-
-            if (text && text.trim()) {
-                // Add text to queue and speak
-                textQueue.push(text);
-
-                // If this is the first text, start speaking
-                if (textQueue.length === 1) {
-                    speakNextInQueue();
-                }
-            }
-        } catch (error) {
-            console.error("Error processing image:", error);
-            // Continue with next image
+// Process the next image in the queue
+async function processNextImage() {
+    if (!isReading || imageQueue.length === 0) {
+        // If we've processed all images and no text was found
+        if (textQueue.length === 0) {
+            speak("No text could be extracted from the comic images.");
+            isReading = false;
         }
+        return;
     }
 
-    // If no text was found in any image
-    if (textQueue.length === 0) {
-        speak("No text could be extracted from the comic images.");
-        isReading = false;
+    currentImageIndex++;
+    if (currentImageIndex >= imageQueue.length) {
+        console.log("Reached the end of the image queue");
+        return;
+    }
+
+    const img = imageQueue[currentImageIndex];
+    console.log(
+        `Processing image ${currentImageIndex + 1}/${imageQueue.length}: ${
+            img.src
+        }`
+    );
+
+    try {
+        // Mark image as processed
+        processedImages.add(img.src);
+
+        // Highlight the current image
+        highlightImage(img);
+
+        // Scroll to the image
+        img.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        // Extract text from image
+        const text = await extractTextFromImage(img);
+
+        if (text && text.trim()) {
+            console.log(
+                `Text extracted from image ${
+                    currentImageIndex + 1
+                }: ${text.substring(0, 50)}...`
+            );
+            // Add text to queue
+            textQueue.push({
+                text: text,
+                image: img,
+            });
+
+            // If this is the first text, start speaking
+            if (textQueue.length === 1) {
+                speakNextInQueue();
+            }
+        } else {
+            console.log(`No text found in image ${currentImageIndex + 1}`);
+            // If no text was found, remove highlight and process next image
+            removeHighlight();
+            await processNextImage();
+        }
+    } catch (error) {
+        console.error(
+            `Error processing image ${currentImageIndex + 1}:`,
+            error
+        );
+        // Continue with next image
+        removeHighlight();
+        await processNextImage();
+    }
+
+    // Pre-process the next image if we're not already doing so
+    if (!isProcessingNextImage && currentImageIndex + 1 < imageQueue.length) {
+        preProcessNextImage();
+    }
+}
+
+// Pre-process the next image while speaking the current one
+async function preProcessNextImage() {
+    if (currentImageIndex + 1 >= imageQueue.length || isProcessingNextImage) {
+        return;
+    }
+
+    isProcessingNextImage = true;
+    const nextImg = imageQueue[currentImageIndex + 1];
+    console.log(`Pre-processing next image: ${nextImg.src}`);
+
+    try {
+        // Prepare the next image by extracting text in advance
+        const text = await extractTextFromImage(nextImg);
+        if (text && text.trim()) {
+            console.log(
+                `Pre-processed text for next image: ${text.substring(0, 50)}...`
+            );
+            // Store the pre-processed text for later use
+            nextImg.dataset.preProcessedText = text;
+        } else {
+            console.log(`No text found in pre-processed image`);
+        }
+    } catch (error) {
+        console.error("Error pre-processing next image:", error);
+    } finally {
+        isProcessingNextImage = false;
+    }
+}
+
+// Highlight the current image being processed
+function highlightImage(img) {
+    // Remove any existing highlight
+    removeHighlight();
+
+    // Store the original style
+    currentHighlightedImage = {
+        element: img,
+        originalOutline: img.style.outline,
+        originalOutlineOffset: img.style.outlineOffset,
+        originalBoxShadow: img.style.boxShadow,
+        originalBorder: img.style.border,
+    };
+
+    // Apply highlight
+    img.style.outline = "4px solid #4285f4";
+    img.style.outlineOffset = "3px";
+    img.style.boxShadow = "0 0 20px rgba(66, 133, 244, 0.8)";
+    img.style.border = "2px solid #4285f4";
+
+    console.log(`Highlighted image: ${img.src}`);
+}
+
+// Remove highlight from the current image
+function removeHighlight() {
+    if (currentHighlightedImage) {
+        const img = currentHighlightedImage.element;
+        img.style.outline = currentHighlightedImage.originalOutline;
+        img.style.outlineOffset = currentHighlightedImage.originalOutlineOffset;
+        img.style.boxShadow = currentHighlightedImage.originalBoxShadow;
+        img.style.border = currentHighlightedImage.originalBorder;
+
+        console.log(`Removed highlight from image: ${img.src}`);
+        currentHighlightedImage = null;
     }
 }
 
@@ -312,17 +420,23 @@ function speak(text) {
     // Handle end of speech
     utterance.onend = () => {
         if (isReading) {
-            // Remove the spoken text from the queue
-            textQueue.shift();
-
-            // Speak next text in queue
+            // If we're speaking from the queue, process the next item
             if (textQueue.length > 0) {
-                setTimeout(() => {
-                    speakNextInQueue();
-                }, 500); // Small pause between texts
-            } else {
-                // If queue is empty, look for more images
-                processComicImages();
+                // Remove the spoken text from the queue
+                textQueue.shift();
+
+                // Speak next text in queue or process next image
+                if (textQueue.length > 0) {
+                    setTimeout(() => {
+                        speakNextInQueue();
+                    }, 500); // Small pause between texts
+                } else {
+                    // If text queue is empty, process the next image
+                    setTimeout(() => {
+                        removeHighlight();
+                        processNextImage();
+                    }, 500);
+                }
             }
         }
     };
@@ -330,21 +444,32 @@ function speak(text) {
     // Handle errors
     utterance.onerror = (event) => {
         console.error("Speech synthesis error:", event.error);
-        textQueue.shift(); // Remove problematic text
 
         if (textQueue.length > 0) {
-            speakNextInQueue();
+            textQueue.shift(); // Remove problematic text
+            if (textQueue.length > 0) {
+                speakNextInQueue();
+            } else {
+                removeHighlight();
+                processNextImage();
+            }
         }
     };
 
     // Speak the text
+    console.log(`Speaking: ${text.substring(0, 50)}...`);
     synth.speak(utterance);
 }
 
 // Speak the next text in the queue
 function speakNextInQueue() {
     if (textQueue.length > 0 && isReading) {
-        speak(textQueue[0]);
+        const item = textQueue[0];
+        // Highlight the image associated with the text
+        if (item.image) {
+            highlightImage(item.image);
+        }
+        speak(item.text);
     }
 }
 
@@ -352,6 +477,9 @@ function speakNextInQueue() {
 function stopReading() {
     isReading = false;
     textQueue = [];
+    imageQueue = [];
+    currentImageIndex = -1;
+    isProcessingNextImage = false;
 
     // Cancel any ongoing speech
     if (synth.speaking) {
@@ -359,10 +487,7 @@ function stopReading() {
     }
 
     // Remove any highlights
-    document.querySelectorAll("img").forEach((img) => {
-        if (img.style.outline.includes("solid #4285f4")) {
-            img.style.outline = "";
-            img.style.outlineOffset = "";
-        }
-    });
+    removeHighlight();
+
+    console.log("Reading stopped");
 }
