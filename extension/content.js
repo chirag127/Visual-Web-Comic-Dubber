@@ -13,6 +13,9 @@ let processedImages = new Set();
 let currentHighlightedImage = null;
 let isProcessingNextImage = false;
 let currentImageIndex = -1;
+let currentBatchIndex = 0;
+let batchSize = 5; // Process 5 images at once
+let batchResults = {}; // Store OCR results for each batch
 
 // Initialize speech synthesis
 const synth = window.speechSynthesis;
@@ -64,6 +67,8 @@ async function processComicImages() {
     textQueue = [];
     imageQueue = [];
     currentImageIndex = -1;
+    currentBatchIndex = 0;
+    batchResults = {};
     isProcessingNextImage = false;
 
     // Find all images on the page
@@ -110,8 +115,75 @@ async function processComicImages() {
 
     console.log(`Sorted ${imageQueue.length} comic images by position`);
 
+    // Process images in batches
+    await processBatch();
+
     // Start processing the first image
     await processNextImage();
+}
+
+// Process a batch of images
+async function processBatch() {
+    if (!isReading || currentBatchIndex >= imageQueue.length) {
+        return;
+    }
+
+    const batchEnd = Math.min(currentBatchIndex + batchSize, imageQueue.length);
+    const currentBatch = imageQueue.slice(currentBatchIndex, batchEnd);
+
+    console.log(
+        `Processing batch of ${currentBatch.length} images (${
+            currentBatchIndex + 1
+        }-${batchEnd} of ${imageQueue.length})`
+    );
+
+    try {
+        // Convert all images in the batch to blobs
+        const batchBlobs = await Promise.all(
+            currentBatch.map(async (img) => {
+                return {
+                    blob: await imageToBlob(img),
+                    index: imageQueue.indexOf(img),
+                };
+            })
+        );
+
+        // Send the batch to the OCR service
+        const batchText = await extractTextFromBatch(
+            batchBlobs.map((item) => item.blob)
+        );
+
+        // Parse the batch results
+        const textParts = parseBatchText(batchText);
+
+        // Store the results for each image
+        for (
+            let i = 0;
+            i < Math.min(textParts.length, currentBatch.length);
+            i++
+        ) {
+            const imgIndex = batchBlobs[i].index;
+            batchResults[imgIndex] = textParts[i];
+        }
+
+        // Update the batch index
+        currentBatchIndex = batchEnd;
+
+        // Process the next batch if there are more images
+        if (currentBatchIndex < imageQueue.length) {
+            await processBatch();
+        }
+    } catch (error) {
+        console.error("Error processing batch:", error);
+        // Continue with the next batch
+        currentBatchIndex = Math.min(
+            currentBatchIndex + batchSize,
+            imageQueue.length
+        );
+        if (currentBatchIndex < imageQueue.length) {
+            await processBatch();
+        }
+    }
 }
 
 // Process the next image in the queue
@@ -148,14 +220,25 @@ async function processNextImage() {
         // Scroll to the image
         img.scrollIntoView({ behavior: "smooth", block: "center" });
 
-        // Extract text from image
-        const text = await extractTextFromImage(img);
+        // Get text from batch results or extract it if not available
+        let text;
+        if (batchResults[currentImageIndex]) {
+            text = batchResults[currentImageIndex];
+            console.log(
+                `Using pre-processed text from batch for image ${
+                    currentImageIndex + 1
+                }`
+            );
+        } else {
+            text = await extractTextFromImage(img);
+        }
 
         if (text && text.trim()) {
             console.log(
-                `Text extracted from image ${
-                    currentImageIndex + 1
-                }: ${text.substring(0, 50)}...`
+                `Text for image ${currentImageIndex + 1}: ${text.substring(
+                    0,
+                    50
+                )}...`
             );
             // Add text to queue
             textQueue.push({
@@ -182,40 +265,87 @@ async function processNextImage() {
         removeHighlight();
         await processNextImage();
     }
+}
 
-    // Pre-process the next image if we're not already doing so
-    if (!isProcessingNextImage && currentImageIndex + 1 < imageQueue.length) {
-        preProcessNextImage();
+// Extract text from a batch of images
+async function extractTextFromBatch(blobs) {
+    try {
+        console.log(`Sending batch of ${blobs.length} images to OCR service`);
+
+        // Create form data with multiple images
+        const formData = new FormData();
+        blobs.forEach((blob, index) => {
+            formData.append("images", blob, `comic_image_${index}.jpg`);
+        });
+
+        // Send to backend
+        console.log(
+            `Sending batch to OCR service at ${currentSettings.backendUrl}/ocr-batch`
+        );
+        const response = await fetch(
+            `${currentSettings.backendUrl}/ocr-batch`,
+            {
+                method: "POST",
+                body: formData,
+            }
+        );
+
+        if (!response.ok) {
+            let errorMessage = `Server returned ${response.status} ${response.statusText}`;
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorMessage;
+                if (errorData.details) {
+                    errorMessage += `: ${errorData.details}`;
+                }
+            } catch (e) {
+                console.error("Failed to parse error response as JSON:", e);
+            }
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        console.log(
+            `Batch OCR result received: ${
+                data.text ? data.text.substring(0, 100) + "..." : "No text"
+            }`
+        );
+
+        return data.text;
+    } catch (error) {
+        console.error("Batch OCR Error:", error);
+        throw error;
     }
+}
+
+// Parse the batch text result into individual image texts
+function parseBatchText(batchText) {
+    if (!batchText) return [];
+
+    // Split by IMAGE X: pattern
+    const regex = /IMAGE \d+:\s*(.*?)(?=IMAGE \d+:|$)/gs;
+    const matches = [];
+    let match;
+
+    while ((match = regex.exec(batchText)) !== null) {
+        if (match[1]) {
+            matches.push(match[1].trim());
+        }
+    }
+
+    // If no matches found, try to use the whole text
+    if (matches.length === 0 && batchText.trim()) {
+        matches.push(batchText.trim());
+    }
+
+    console.log(`Parsed ${matches.length} text segments from batch result`);
+    return matches;
 }
 
 // Pre-process the next image while speaking the current one
 async function preProcessNextImage() {
-    if (currentImageIndex + 1 >= imageQueue.length || isProcessingNextImage) {
-        return;
-    }
-
-    isProcessingNextImage = true;
-    const nextImg = imageQueue[currentImageIndex + 1];
-    console.log(`Pre-processing next image: ${nextImg.src}`);
-
-    try {
-        // Prepare the next image by extracting text in advance
-        const text = await extractTextFromImage(nextImg);
-        if (text && text.trim()) {
-            console.log(
-                `Pre-processed text for next image: ${text.substring(0, 50)}...`
-            );
-            // Store the pre-processed text for later use
-            nextImg.dataset.preProcessedText = text;
-        } else {
-            console.log(`No text found in pre-processed image`);
-        }
-    } catch (error) {
-        console.error("Error pre-processing next image:", error);
-    } finally {
-        isProcessingNextImage = false;
-    }
+    // We don't need this anymore since we're using batch processing
+    return;
 }
 
 // Highlight the current image being processed

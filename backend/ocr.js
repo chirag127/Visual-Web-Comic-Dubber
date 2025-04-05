@@ -75,6 +75,7 @@ function cleanupUploads() {
 // Run cleanup every hour
 setInterval(cleanupUploads, 3600000);
 
+// Handle single image OCR
 app.post("/ocr", upload.single("image"), async (req, res) => {
     try {
         if (!req.file) {
@@ -109,6 +110,64 @@ app.post("/ocr", upload.single("image"), async (req, res) => {
                 console.error("Error deleting file:", err);
             }
         });
+
+        res.json({ text: extractedText });
+    } catch (error) {
+        console.error("OCR Error:", error);
+        res.status(500).json({
+            error: "Failed to extract text.",
+            details: error.message,
+        });
+    }
+});
+
+// Handle multiple images OCR
+app.post("/ocr-batch", upload.array("images", 5), async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ error: "No image files provided" });
+        }
+
+        console.log(`Processing batch of ${req.files.length} images`);
+
+        // Convert all image files to base64
+        const imageParts = [];
+        for (const file of req.files) {
+            const mimeType = mime.lookup(file.originalname) || "image/jpeg";
+            const imagePart = await fileToGenerativePart(file.path, mimeType);
+            imageParts.push(imagePart);
+        }
+
+        // Create chat session with all images
+        const chatSession = model.startChat({
+            generationConfig: {
+                temperature: 0.1,
+                topP: 0.95,
+                maxOutputTokens: 8192,
+            },
+            history: [
+                {
+                    role: "user",
+                    parts: [...imageParts],
+                },
+            ],
+        });
+
+        // Send message to extract text from all images
+        const result = await chatSession.sendMessage(
+            "You are an OCR system for comic images. Extract ALL text visible in these comic images, including dialogue in speech bubbles, captions, sound effects, and any other text. For each image, start with 'IMAGE X:' (where X is the image number) and then provide the extracted text. If no text is found in an image, respond with 'No text detected in this image.'"
+        );
+
+        const extractedText = result.response.text();
+
+        // Clean up the uploaded files
+        for (const file of req.files) {
+            fs.unlink(file.path, (err) => {
+                if (err) {
+                    console.error(`Error deleting file ${file.path}:`, err);
+                }
+            });
+        }
 
         res.json({ text: extractedText });
     } catch (error) {
