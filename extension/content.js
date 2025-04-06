@@ -7,6 +7,7 @@ let currentSettings = {
     rate: 1.0,
     pitch: 1.0,
     volume: 1.0,
+    batchSize: 5,
     backendUrl: "https://visual-web-comic-dubber.onrender.com",
 };
 let processedImages = new Set();
@@ -14,7 +15,7 @@ let currentHighlightedImage = null;
 let isProcessingNextImage = false;
 let currentImageIndex = -1;
 let currentBatchIndex = 0;
-let batchSize = 5; // Process 5 images at once
+let batchSize = 5; // Default batch size, will be updated from settings
 let batchResults = {}; // Store OCR results for each batch
 
 // Initialize speech synthesis
@@ -29,10 +30,15 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
             rate: parseFloat(message.settings.rate),
             pitch: parseFloat(message.settings.pitch),
             volume: parseFloat(message.settings.volume),
+            batchSize: parseInt(message.settings.batchSize, 10),
             backendUrl: message.settings.backendUrl,
         };
 
+        // Update batch size from settings
+        batchSize = currentSettings.batchSize;
+
         console.log("Received settings:", currentSettings);
+        console.log(`Batch size set to ${batchSize} images`);
 
         // Start reading if not already reading
         if (!isReading) {

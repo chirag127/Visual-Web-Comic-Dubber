@@ -126,7 +126,7 @@
   </div>
 
   <div style="text-align: center; margin: 5px 0; font-size: 12px; color: #666;">
-    <span>✨ Batch processing enabled (5 images at once) ✨</span>
+    <span>✨ Batch processing enabled ✨</span>
   </div>
 
   <div class="settings">
@@ -162,6 +162,16 @@
         <span>Quiet</span>
         <span id="volumeValue">1.0</span>
         <span>Loud</span>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <label for="batchSize">Batch Size (images processed at once):</label>
+      <input type="range" id="batchSize" min="1" max="30" step="1" value="5">
+      <div class="value-display">
+        <span>1</span>
+        <span id="batchSizeValue">5</span>
+        <span>10</span>
       </div>
     </div>
 

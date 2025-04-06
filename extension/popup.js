@@ -7,9 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const rateInput = document.getElementById("rate");
     const pitchInput = document.getElementById("pitch");
     const volumeInput = document.getElementById("volume");
+    const batchSizeInput = document.getElementById("batchSize");
     const rateValue = document.getElementById("rateValue");
     const pitchValue = document.getElementById("pitchValue");
     const volumeValue = document.getElementById("volumeValue");
+    const batchSizeValue = document.getElementById("batchSizeValue");
     const statusElement = document.getElementById("status");
     const backendUrlInput = document.getElementById("backendUrl");
 
@@ -51,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 rate: 1.0,
                 pitch: 1.0,
                 volume: 1.0,
+                batchSize: 5,
                 backendUrl: "https://visual-web-comic-dubber.onrender.com",
             },
             function (items) {
@@ -67,12 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 rateInput.value = items.rate;
                 pitchInput.value = items.pitch;
                 volumeInput.value = items.volume;
+                batchSizeInput.value = items.batchSize;
                 backendUrlInput.value = items.backendUrl;
 
                 // Update displayed values
                 rateValue.textContent = items.rate.toFixed(1);
                 pitchValue.textContent = items.pitch.toFixed(1);
                 volumeValue.textContent = items.volume.toFixed(1);
+                batchSizeValue.textContent = items.batchSize;
             }
         );
     }
@@ -84,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
             rate: parseFloat(rateInput.value),
             pitch: parseFloat(pitchInput.value),
             volume: parseFloat(volumeInput.value),
+            batchSize: parseInt(batchSizeInput.value, 10),
             backendUrl: backendUrlInput.value,
         });
     }
@@ -104,6 +110,11 @@ document.addEventListener("DOMContentLoaded", function () {
         saveSettings();
     });
 
+    batchSizeInput.addEventListener("input", function () {
+        batchSizeValue.textContent = parseInt(this.value, 10);
+        saveSettings();
+    });
+
     // Save settings when voice or backend URL changes
     voiceSelect.addEventListener("change", saveSettings);
     backendUrlInput.addEventListener("change", saveSettings);
@@ -120,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
             rate: parseFloat(rateInput.value),
             pitch: parseFloat(pitchInput.value),
             volume: parseFloat(volumeInput.value),
+            batchSize: parseInt(batchSizeInput.value, 10),
             backendUrl: backendUrlInput.value,
         };
 
