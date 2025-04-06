@@ -131,3 +131,4 @@ dist
 backend/package-lock.json
 backend/uploads/
 extension.zip
+extension_updated.zip
