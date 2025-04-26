@@ -5,9 +5,7 @@
   "description": "Detects text from comic images and reads them aloud using text-to-speech",
   "permissions": [
     "activeTab",
-    "storage",
-    "tts",
-    "scripting"
+    "storage"
   ],
   "host_permissions": [
     "http://localhost:3001/*",
