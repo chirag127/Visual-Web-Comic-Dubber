@@ -22,7 +22,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 // const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash-lite",
+    model: "gemini-2.5-flash-preview-04-17",
 });
 
 // Function to convert file to base64
