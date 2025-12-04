@@ -1,27 +1,11 @@
-## Creative Commons Attribution-NonCommercial 4.0 International Public License
+Copyright (c) 2024 chirag127
 
-By using, distributing, or modifying this work, you agree to the terms of this Creative Commons Public License ("License"). Subject to the terms of this License, Creative Commons Corporation ("CC") grants you a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute your Contribution as part of one or more Collectives and the Works, whether in Source or Other Form. You are not required to accept this License in order to use, distribute, or display the Work. **See the attached AGENTS.md for specific architectural directives and development standards.**
+This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
-**You are free to:**
+--- 
 
-*   **Share** — copy and redistribute the material in any medium or format
-*   **Adapt** — remix, transform, and build upon the material
+**ATTRIBUTION:** You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
 
-**Under the following terms:**
+**NON-COMMERCIAL USE:** You may not use the material for commercial purposes. If you wish to use the material for commercial purposes, you must first contact the licensor to negotiate a separate agreement.
 
-*   **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-*   **NonCommercial** — You may not use the material for commercial purposes.
-*   **No additional restrictions** — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
-
-**No warranties.** The work is provided "as is" and CC gives no warranties of any kind, either express or implied, or statutory, including, but not limited to, warranties of merchantability, fitness for a particular purpose, non-infringement, or that the work will be uninterrupted or error-free.
-
-**Limitation of liability.** CC is not liable for any damages or obligations arising from this License or the Work, including direct, indirect, special, incidental, or consequential damages, however caused.
-
-**Notice:** For any reuse or distribution, you must make clear to others the license terms of this work. The best way to do this is with a link to this web page: https://creativecommons.org/licenses/by-nc/4.0/
-
-This is a human-readable summary of the Legal Code (the full license). This is not a license and has no legal value. It is a reference tool only.
-
-For more detailed information, please consult the full Legal Code:
-https://creativecommons.org/licenses/by-nc/4.0/legalcode
-
----
+**NO DERIVATIVES (Optional Consideration for Software):** This specific license (CC BY-NC 4.0) generally allows derivatives unless specifically restricted further, but the primary intent here is to share research/code for non-commercial use. For software distribution, it is generally advisable to pair this with a clear 'No Warranty' statement.
