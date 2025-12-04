@@ -1,90 +1,105 @@
-# ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension
+# ComicNarrate-AI-Powered-Web-Comic-Dubber-Browser-Extension
 
-A sophisticated AI-powered Chrome extension that leverages Optical Character Recognition (OCR) and Text-to-Speech (TTS) to dynamically narrate web comic text.
+<!-- BADGES START -->
+[![Build Status](https://img.shields.io/github/actions/workflow/status/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension/ci.yml?style=flat-square&logo=github)](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension/actions)
+[![Code Coverage](https://img.shields.io/codecov/c/github/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension?style=flat-square&logo=codecov)](https://codecov.io/gh/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension)
+[![Tech Stack](https://img.shields.io/badge/Tech%20Stack-JavaScript%2C%20HTML%2C%20CSS%2C%20Gemini%20API-blue?style=flat-square&logo=javascript)](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension)
+[![Lint/Format](https://img.shields.io/badge/Linter%20%26%20Formatter-Biome-informational?style=flat-square&logo=biome)](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension)
+[![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgray?style=flat-square&logo=creativecommons)](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension?style=flat-square&logo=github)](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension)
+<!-- BADGES END -->
 
-Enhance your web comic reading with customizable voice, pitch, and speed, making the experience more accessible and engaging.
-
----
-
-![Build Status](https://img.shields.io/github/actions/workflow/user/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension/ci.yml?style=flat-square&logo=githubactions)
-![Code Coverage](https://img.shields.io/codecov/c/github/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension?style=flat-square&logo=codecov)
-![Tech Stack: JavaScript](https://img.shields.io/badge/Tech%20Stack-JavaScript-blue?style=flat-square&logo=javascript)
-![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-red?style=flat-square&logo=creativecommons)
-![GitHub Stars](https://img.shields.io/github/stars/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension?style=flat-square&logo=github)
-
-[Star ⭐ this Repo](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension)
+## Star ⭐ this Repo
 
 ---
 
-## Table of Contents
 
-*   [Project Overview](#project-overview)
-*   [Key Features](#key-features)
-*   [Technology Stack](#technology-stack)
-*   [Architecture](#architecture)
-*   [Getting Started](#getting-started)
-*   [Usage](#usage)
-*   [Development & Contribution](#development--contribution)
-*   [License](#license)
-*   [Security](#security)
+## BLUF (Bottom Line Up Front)
+
+ComicNarrate transforms web comics into an accessible, hands-free experience by using AI (Gemini OCR & TTS) to read them aloud. Enhance your reading journey with customizable voices and playback.
 
 ---
 
-## Project Overview
 
-ComicNarrate is a cutting-edge Chrome extension designed to revolutionize how users consume web comics. By integrating advanced AI capabilities, it automatically extracts text from web comic panels using OCR (powered by Gemini's Vision capabilities) and converts it into speech using Text-to-Speech (TTS) synthesis. Users can personalize their listening experience with a variety of voices, adjust pitch, and control playback speed.
-
----
-
-## Key Features
-
-*   **AI-Powered OCR:** Accurately extracts text from web comic images using Google Gemini Vision.
-*   **Text-to-Speech (TTS) Synthesis:** Converts extracted text into natural-sounding speech.
-*   **Customizable Voices:** Offers a selection of voices to choose from.
-*   **Adjustable Speech Parameters:** Control pitch and playback speed for a tailored experience.
-*   **Browser Extension:** Seamlessly integrates with the Chrome browser.
-*   **Accessibility Focused:** Enhances comic reading for visually impaired users or those who prefer auditory content.
-
----
-
-## Technology Stack
-
-*   **Core Language:** JavaScript (ES6+)
-*   **Framework/Libraries:** Vanilla JS, Web Extension APIs
-*   **AI Integration:** Google Gemini API (OCR capabilities)
-*   **TTS Engine:** Browser's Web Speech API or external service integration
-*   **Build Tools:** Vite (for development builds and optimization)
-*   **Linting/Formatting:** Ruff (unified Python tool, adapted for JS tooling awareness)
-*   **Testing:** Vitest (for unit testing), Playwright (for E2E testing)
-
----
-
-## Architecture
-
-ComicNarrate employs a modular, event-driven architecture optimized for browser extensions.
+## 🚀 Project Architecture
 
 mermaid
 graph TD
-    A[Content Script] --> B{OCR Service Call (Gemini Vision)}
-    B --> C{Text Extraction & Processing}
-    C --> D{TTS Service Call (Web Speech API/External)}
-    D --> E[Audio Playback]
-    A --> F[UI Script/Popup]
-    F --> G{User Configuration}
-    G --> A
+    A[Browser Extension]
+    B[Web Comic Page]
+    C[ComicNarrate Core Logic]
+    D[Google Gemini API (OCR)]
+    E[Google Gemini API (TTS)]
+    F[User Configuration]
 
+    A --> C
+    B --> C
+    C --> D
+    C --> E
+    C --> F
+    D --> C
+    E --> C
+    C --> A
 
-**Key Architectural Principles:**
-*   **Modularity:** Each component (OCR, TTS, UI, Configuration) is designed for independent development and testing.
-*   **Event-Driven:** Communication between different parts of the extension (e.g., content script, background script, popup) is handled asynchronously via messages and events.
-*   **Client-Side Focus:** Primarily runs within the browser, minimizing server-side dependencies for core functionality.
 
 ---
 
-## <details>
-<summary>🤖 AI AGENT DIRECTIVES (DECEMBER 2025 EDITION)</summary>
 
-**SYSTEM: APEX TECHNICAL AUTHORITY & ELITE ARCHITECT (DECEMBER 2025 EDITION)**
+## 📜 Table of Contents
+
+*   [BLUF (Bottom Line Up Front)](#bluf-bottom-line-up-front)
+*   [🚀 Project Architecture](#-project-architecture)
+*   [📜 Table of Contents](#-table-of-contents)
+*   [✨ Features](#-features)
+*   [🛠️ Tech Stack](#-tech-stack)
+*   [💡 AI Agent Directives](#-ai-agent-directives)
+*   [🚀 Development Setup](#-development-setup)
+*   [📜 Contributing Guidelines](#-contributing-guidelines)
+*   [⚖️ License](#-license)
+*   [❤️ Acknowledgements](#-acknowledgements)
+
+---
+
+
+## ✨ Features
+
+*   **AI-Powered OCR:** Leverages Google Gemini's Vision capabilities to accurately extract text from web comic panels.
+*   **AI-Powered TTS:** Utilizes Google Gemini's Text-to-Speech functionality to read the extracted text aloud.
+*   **Customizable Voices:** Select from a range of voices for narration.
+*   **Adjustable Pitch & Speed:** Fine-tune the audio output to your preference.
+*   **Hands-Free Reading:** Enjoy web comics without needing to actively read.
+*   **Enhanced Accessibility:** Makes web comics accessible to visually impaired users or those who prefer audio.
+*   **Seamless Integration:** Works directly within your browser as a Chrome Extension.
+
+---
+
+
+## 🛠️ Tech Stack
+
+This project is built using a modern JavaScript stack, prioritizing performance, maintainability, and advanced AI integration.
+
+*   **Language:** JavaScript (ESNext)
+*   **Framework/Environment:** Chrome Extension APIs
+*   **AI Integration:** Google Gemini API (Vision & TTS)
+*   **Core Libraries:**
+    *   Manifest V3
+    *   HTML, CSS
+*   **Development Tools:**
+    *   **Package Manager:** npm
+    *   **Bundler/Build Tool:** Vite (for potential future expansion or local dev)
+    *   **Linter & Formatter:** Biome (ensures code consistency and quality)
+    *   **Testing Framework:** Vitest (for unit and integration tests)
+    *   **End-to-End Testing:** Playwright
+
+---
+
+
+## 💡 AI Agent Directives
+
+<details>
+  <summary>Click to view AI Agent Directives</summary>
+
+# SYSTEM: APEX TECHNICAL AUTHORITY & ELITE ARCHITECT (DECEMBER 2025 EDITION)
 
 ## 1. IDENTITY & PRIME DIRECTIVE
 **Role:** You are a Senior Principal Software Architect and Master Technical Copywriter with **40+ years of elite industry experience**. You operate with absolute precision, enforcing FAANG-level standards and the wisdom of "Managing the Unmanageable."
@@ -110,98 +125,95 @@ graph TD
 ## 3. CONTEXT-AWARE APEX TECH STACKS (LATE 2025 STANDARDS)
 **Directives:** Detect the project type and apply the corresponding **Apex Toolchain**.
 
-*   **PRIMARY SCENARIO: WEB / APP / EXTENSION (TypeScript/JavaScript)**
-    *   **Stack:** This project leverages **JavaScript (ES6+)**, with **Vite** for development builds and optimization. Future-proofing suggests considering TypeScript. Core extension APIs are standard. **Google Gemini API** is integral for OCR. **Web Speech API** is used for TTS.
-    *   **Architecture:** Adheres to a **Modular, Event-Driven Architecture** suitable for browser extensions, emphasizing clear separation of concerns via content scripts, background scripts, and popup UIs.
-    *   **Linting/Formatting:** While Ruff is mentioned in the base, for JavaScript, **Biome** is the preferred ultra-fast linter and formatter for 2025 standards.
-    *   **Testing:** **Vitest** for unit tests and **Playwright** for end-to-end (E2E) testing are the standard choices.
+*   **PRIMARY SCENARIO: WEB / APP / EXTENSION (TypeScript / JavaScript)**
+    *   **Stack:** This project leverages **JavaScript (ESNext)** and adheres to modern browser extension standards. Key tools include **npm** for package management, **Biome** (for ultra-fast linting and formatting), **Vitest** (for robust unit and integration testing), and **Playwright** (for end-to-end testing). Development may utilize **Vite** for efficient bundling and local development.
+    *   **Architecture:** Follows the **Feature-Sliced Design (FSD)** pattern for maintainable and scalable browser extensions. Adheres to **Manifest V3** standards, prioritizing security, performance, and user privacy.
+    *   **AI Integration:** Deeply integrated with **Google Gemini API** (e.g., `gemini-pro-vision` for OCR, `text-to-speech` for narration) for intelligent content processing. Prioritize modular design, clear API contracts, and robust error handling for all AI model interactions.
+
+*   **SECONDARY SCENARIO: DATA / SCRIPTS / AI (Python) - *Not applicable for this project's primary function.***
+    *   **Stack:** uv (Manager), Ruff (Linter), Pytest (Test).
+    *   **Architecture:** Modular Monolith or Microservices.
 
 ---
 
-## 4. NAMING & VERSIONING CONVENTION (STAR VELOCITY ENGINE)
-
-*   **Product Name:** `<Product-Name>-<Primary-Function>-<Platform>-<Type>`
-*   **Format:** `Title-Case-With-Hyphens` (e.g., `ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension`).
-*   **Versioning:** Semantic Versioning (SemVer) is mandatory.
-
----
-
-## 5. CODE QUALITY & STANDARDS
-
-*   **SOLID Principles:** Adhere to Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion.
-*   **DRY Principle:** Don't Repeat Yourself.
-*   **YAGNI Principle:** You Ain't Gonna Need It - build only what is necessary.
-*   **Linters & Formatters:** Integrate and enforce **Biome** for JavaScript. All code must pass linting and formatting checks.
-*   **Type Safety:** Strongly recommend migrating to TypeScript for enhanced type safety and maintainability in complex JavaScript projects.
+## 4. CORE PRINCIPLES (STANDARD 11 COMPLIANCE)
+*   **SOLID Principles:** Adhere strictly to Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion.
+*   **DRY (Don't Repeat Yourself):** Avoid redundant code. Abstract common logic into reusable modules or functions.
+*   **YAGNI (You Ain't Gonna Need It):** Implement only the functionality that is currently required. Avoid premature optimization or feature creep.
+*   **Security First:** Integrate security considerations from the outset. Sanitize all inputs, handle API keys securely (environment variables/secrets management), and be mindful of potential cross-site scripting (XSS) and other web vulnerabilities. For extensions, adhere to Manifest V3's security best practices.
+*   **Performance Optimized:** Ensure efficient DOM manipulation, minimal resource usage, and asynchronous operations for AI calls and network requests.
+*   **Maintainable Codebase:** Employ clear naming conventions, consistent formatting, comprehensive commenting for complex logic, and modular design.
 
 ---
 
-## 6. TESTING & VERIFICATION PROTOCOL
-
-*   **Unit Testing:** Use **Vitest**. All new features must have corresponding unit tests.
-*   **Integration Testing:** Mock dependencies where necessary. Use Vitest for integration tests.
-*   **End-to-End (E2E) Testing:** Use **Playwright**. Simulate real user interactions within the browser environment.
-*   **CI/CD Pipeline:** Automate testing and deployment using GitHub Actions.
-
----
-
-## 7. SECURITY PROTOCOL (THE "FORTRESS" MANDATE)
-
-*   **Dependency Scanning:** Regularly scan dependencies for vulnerabilities using `npm audit` or equivalent.
-*   **API Key Management:** **NEVER** hardcode API keys. Use environment variables or secure browser extension storage mechanisms. Implement rate limiting and proper error handling for external API calls (e.g., Gemini).
-*   **Input Sanitization:** Sanitize all user inputs and data received from external sources to prevent injection attacks.
-*   **Least Privilege:** Grant only necessary permissions to the browser extension.
-*   **Privacy:** Ensure user data is handled ethically and transparently, adhering to privacy regulations.
+## 5. TESTING AND VERIFICATION PROTOCOL
+*   **Unit Testing:** All core logic, utility functions, and component interactions MUST be covered by unit tests using **Vitest**. Aim for >80% code coverage.
+*   **Integration Testing:** Verify interactions between different modules and external services (mocked where appropriate) using **Vitest**.
+*   **End-to-End (E2E) Testing:** Utilize **Playwright** to simulate user interactions and test the extension's behavior within a browser environment.
+*   **Linting & Formatting:** **Biome** MUST be used for linting and formatting all code. Run `biome check --apply` and `biome format --write` before committing.
+*   **CI/CD Verification:** All changes MUST pass the CI pipeline defined in `.github/workflows/ci.yml`.
 
 ---
 
-## 8. DOCUMENTATION & KNOWLEDGE MANAGEMENT
-
-*   **README.md:** Comprehensive project overview, setup, usage, and contribution guidelines.
-*   **AGENTS.md:** This document detailing AI agent directives and project standards.
-*   **Code Comments:** Well-commented code, especially for complex logic or non-obvious implementations.
-*   **Architecture Diagrams:** Maintain up-to-date diagrams (e.g., using Mermaid).
+## 6. API INTEGRATION PROTOCOL
+*   **Gemini API:** Securely manage API keys using environment variables (e.g., `process.env.GEMINI_API_KEY`). Implement robust error handling, including rate limiting, network errors, and API-specific error responses.
+*   **Asynchronous Operations:** All AI and network requests MUST be handled asynchronously using `async/await`.
+*   **Data Handling:** Validate and sanitize all data received from the Gemini API before use.
 
 ---
 
-## 9. CONTRIBUTION GUIDELINES (THE "COLLABORATIVE EDGE")
-
-*   **Fork & Clone:** Follow standard GitHub contribution workflow.
-*   **Branching Strategy:** Use feature branches (e.g., `feature/your-new-feature`).
-*   **Pull Requests:** Submit clear, concise Pull Requests with detailed descriptions.
-*   **Code Reviews:** All PRs require review and approval.
-*   **Issue Tracker:** Utilize GitHub Issues for bug reports and feature requests.
+## 7. USER EXPERIENCE (UX) & ACCESSIBILITY PROTOCOL
+*   **Intuitive UI:** Design user interfaces that are clean, simple, and easy to navigate.
+*   **Accessibility:** Ensure the extension meets WCAG 2.1 AA standards where applicable, especially for any UI elements it introduces.
+*   **Customization:** Provide clear options for users to configure voice, pitch, and speed.
 
 ---
 
-## 10. DEPLOYMENT & MAINTENANCE (VELOCITY TO PRODUCTION)
-
-*   **CI/CD:** GitHub Actions to automate builds, tests, and deployments to Chrome Web Store (manual steps may be required).
-*   **Release Management:** Follow SemVer for releases.
-*   **Monitoring:** Implement basic logging and error tracking within the extension.
+## 8. DOCUMENTATION PROTOCOL
+*   **README:** MUST be comprehensive, detailing features, architecture, setup, and usage.
+*   **AGENTS.md:** This document serves as the directive for AI agents interacting with the repository.
+*   **Code Comments:** Use JSDoc for functions and complex logic blocks.
 
 ---
 
-## 11. ARCHIVAL PROTOCOL (THE "RETIRED PRODUCT" STANDARD)
+## 9. VERSIONING & DEPLOYMENT PROTOCOL
+*   **Versioning:** Use Semantic Versioning (SemVer).
+*   **Deployment:** Standard Chrome Extension publishing workflow, integrated with CI/CD.
 
-*   **No "Junk":** Archived repositories are considered "Retired Products."
-*   **Professionalism:** Maintain professional metadata (Name, Description, Topics) even upon archival.
-*   **Value Preservation:** Ensure documentation remains accurate and accessible for historical reference.
+---
+
+## 10. SECURITY & PRIVACY PROTOCOL
+*   **Data Minimization:** Only request and process data necessary for functionality.
+*   **API Key Management:** Never hardcode API keys. Use `.env` files for local development and secure secrets management for production/CI.
+*   **Permissions:** Request the minimum necessary browser permissions.
+*   **User Consent:** Clearly inform users about data usage, especially regarding AI processing.
+
+---
+
+## 11. COMPLIANCE MANDATE (THE "STANDARD 11")
+Every repository **MUST** appear professional. Ensure the presence and proper configuration of:
+1.  README.md
+2.  PROPOSED_README.md
+3.  badges.yml
+4.  LICENSE (CC BY-NC 4.0)
+5.  .gitignore
+6.  .github/workflows/ci.yml
+7.  .github/CONTRIBUTING.md
+8.  .github/ISSUE_TEMPLATE/bug_report.md
+9.  .github/PULL_REQUEST_TEMPLATE.md
+10. .github/SECURITY.md
+11. AGENTS.md
+
+All generated files MUST comply with these directives, including dynamic URL generation based on the current repository name: `ComicNarrate-AI-Powered-Web-Comic-Dubber-Browser-Extension`.
 
 </details>
 
 ---
 
-## Getting Started
 
-### Prerequisites
+## 🚀 Development Setup
 
-*   Google Chrome browser
-*   Node.js (v18+ recommended)
-*   npm or yarn
-*   A Google Cloud project with Gemini API enabled and an API key.
-
-### Installation
+Follow these steps to set up the project locally:
 
 1.  **Clone the repository:**
     bash
@@ -212,65 +224,55 @@ graph TD
 2.  **Install dependencies:**
     bash
     npm install
-    # or
-    # yarn install
     
 
-3.  **Set up API Key:**
-    Create a `.env` file in the root directory and add your Gemini API key:
+3.  **Set up environment variables:**
+    Create a `.env` file in the root directory and add your Google Gemini API key:
+    env
+    GEMINI_API_KEY=YOUR_GEMINI_API_KEY
     
-    GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
+    *Note: For security, ensure `.env` is included in your `.gitignore` file.*
+
+4.  **Run linters and formatters:**
+    bash
+    npx @biomejs/biome check --apply
+    npx @biomejs/biome format --write .
     
-    *(Note: For production, API keys should be managed more securely, e.g., via Chrome's sync storage API with appropriate security measures or server-side processing if feasible.)*
 
-4.  **Load the extension:**
-    *   Open Chrome and navigate to `chrome://extensions/`.
-    *   Enable "Developer mode" (toggle switch in the top-right corner).
-    *   Click "Load unpacked" and select the `dist` folder (or the folder containing your built extension files after running the build command).
+5.  **Run tests:**
+    bash
+    npm run test
+    
 
----
+6.  **Build for production:**
+    bash
+    npm run build
+    
 
-## Usage
-
-1.  Navigate to a web comic page.
-2.  Click the ComicNarrate extension icon in your Chrome toolbar.
-3.  The extension will attempt to detect comic panels and extract text.
-4.  The extracted text will be read aloud using the default TTS settings.
-5.  Access the extension's popup to customize voice, pitch, and speed.
-
----
-
-## Development & Contribution
-
-### Setup
-
-Follow the Installation steps above.
-
-### Development Scripts
-
-| Script      | Description                                       |
-| :---------- | :------------------------------------------------ | 
-| `npm run dev` | Starts the Vite development server for the extension. |
-| `npm run build`| Builds the extension for production.              |
-| `npm run lint` | Runs the linter (Biome) to check code quality.    |
-| `npm run test` | Runs unit and integration tests using Vitest.      |
-| `npm run test:e2e` | Runs end-to-end tests using Playwright.         |
-
-### Contributing
-
-Contributions are welcome! Please refer to the [CONTRIBUTING.md](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension/blob/main/.github/CONTRIBUTING.md) file for detailed guidelines on how to submit pull requests and report issues.
+7.  **Load the extension in Chrome:**
+    *   Open Chrome and go to `chrome://extensions/`.
+    *   Enable "Developer mode" (toggle switch in the top right).
+    *   Click "Load unpacked" (button in the top left).
+    *   Select the `dist` folder (or your build output folder) from the project directory.
 
 ---
 
-## License
 
-This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.
+## 📜 Contributing Guidelines
 
-See the [LICENSE](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension/blob/main/LICENSE) file for more details.
+We welcome contributions! Please read our [CONTRIBUTING.md](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension/blob/main/.github/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
 
 ---
 
-## Security
 
-We take security seriously. Please refer to the [SECURITY.md](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension/blob/main/.github/SECURITY.md) file for our security policy and reporting guidelines.
+## ⚖️ License
 
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0) - see the [LICENSE](https://github.com/chirag127/ComicNarrate-AI-Web-Comic-Dubber-Browser-Extension/blob/main/LICENSE) file for details.
+
+---
+
+
+## ❤️ Acknowledgements
+
+*   Special thanks to Google for providing the powerful Gemini API.
+*   Inspired by the need for greater accessibility in digital content consumption.
